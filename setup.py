@@ -1,6 +1,11 @@
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
+
 from project import settings
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 
 def convert_requirements_to_list(fname):
@@ -18,10 +23,18 @@ setup(
     name=settings.PACKAGE_NAME,
     version=settings.PACKAGE_VERSION,
     description=settings.PACKAGE_DESCRIPTION,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author=settings.PACKAGE_AUTHOR,
     url=settings.PACKAGE_URL,
     packages=find_packages(),
     setup_requires=["pytest-runner"],
     install_requires=base_packages,
     extras_require={"docs": docs_packages, "dev": dev_packages},
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires=">=3.6",
 )
