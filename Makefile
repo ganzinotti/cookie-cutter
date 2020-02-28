@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-PROJECT := test
+PROJECT := project
 PYTHON_VERSION := 3.8.0
 VENV = ${PROJECT}-${PYTHON_VERSION}
 VENV_DIR = $(shell pyenv root)/versions/${VENV}
@@ -26,10 +26,12 @@ mac: ##@installation >> install pyenv and pyenv-virtualenv on MacOS
 
 install_user: venv requirements.txt ##@installation >> create user virtual environment based on `requirements.txt`
 	@echo "$(ccso)--> Install packages $(ccend)"
+	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -r requirements.txt
 
 install_dev: venv requirements.txt ##@installation >> create development virtual environment based on `setup.py` dev packages
 	@echo "$(ccso)--> Install packages $(ccend)"
+	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -e ".[dev]"
 	@echo "$(ccso)--> Activate pre-commit hooks $(ccend)"
 	pre-commit install
@@ -48,20 +50,20 @@ check_code_compliance: flake black isort ##@development >> check if `ods_pythia`
 
 flake:
 	@echo "$(ccso)--> Check flake8 compliance of ods_pythia $(ccend)"
-	flake8 ods_pythia/ scripts/ setup.py
+	flake8 ${PROJECT}/ scripts/ setup.py
 
 black:
 	@echo "$(ccso)--> Check black compliance of ods_pythia $(ccend)"
-	black ods_pythia/ scripts/ setup.py
+	black ${PROJECT}/ scripts/ setup.py
 
 isort:
 	@echo "$(ccso)--> Check isort compliance of ods_pythia $(ccend)"
-	isort -rc ods_pythia/ scripts/ setup.py
+	isort -rc ${PROJECT}/ scripts/ setup.py
 
 run_tests_local: install_dev clean_tests ##@development >> run tests inside virtual environment
 	@echo "$(ccso)--> Run tests $(ccend)"
 	export PYTHONHASHSEED=$(PYTHONHASHSEED)
-	pytest --cov=ods_pythia/ --cov=scripts/  --cov-report=term-missing --disable-pytest-warnings
+	pytest --cov=${PROJECT}/ --cov-report=term-missing --disable-pytest-warnings
 
 .ONESHELL:
 check_branch_matches_version:
@@ -100,7 +102,7 @@ clean_venv: ##@clean >> remove all environment-related files
 
 clean_tests: ##@clean >> remove all testing-related files
 	@echo "$(ccso)--> Clean tests $(ccend)"
-	rm -rf dist build .eggs *.egg-info test-reports tests/data/temp
+	rm -rf dist build .eggs *.egg-info test-reports
 	find . -name .pytest_cache -type d -exec rm -rf {} +
 	find . -name __pycache__ -type d -exec rm -rf {} +
 
