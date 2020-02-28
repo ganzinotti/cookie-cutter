@@ -1,0 +1,5 @@
+PACKAGE_NAME = "project"
+PACKAGE_VERSION = "0.0.1"
+PACKAGE_DESCRIPTION = "put your description here"
+PACKAGE_AUTHOR = "Name"
+PACKAGE_URL = "https://<not available>"
